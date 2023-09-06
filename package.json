@@ -1,0 +1,28 @@
+{
+  "name": "hardhat-fund-me",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scripts/deploy.ts",
+  "scripts": {
+    "test": "hardhat test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NullSploit01/hardhat-fund-me.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NullSploit01/hardhat-fund-me/issues"
+  },
+  "homepage": "https://github.com/NullSploit01/hardhat-fund-me#readme",
+  "devDependencies": {
+    "@chainlink/contracts": "^0.6.1",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.2",
+    "hardhat-deploy": "^0.11.37",
+    "prettier": "^3.0.3",
+    "prettier-plugin-solidity": "^1.1.3",
+    "solhint": "^3.6.2"
+  }
+}
