@@ -2,7 +2,7 @@
   "name": "hardhat-fund-me",
   "version": "1.0.0",
   "description": "",
-  "main": "scripts/deploy.ts",
+  "main": "deploy/01-deploy-fund-me.ts",
   "scripts": {
     "test": "hardhat test"
   },
@@ -19,6 +19,8 @@
   "devDependencies": {
     "@chainlink/contracts": "^0.6.1",
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.4.1",
+    "ethers": "^6.7.1",
     "hardhat": "^2.17.2",
     "hardhat-deploy": "^0.11.37",
     "prettier": "^3.0.3",
