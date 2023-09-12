@@ -1,6 +1,6 @@
-import { Contract } from "ethers"
 import { deployments, ethers, getNamedAccounts } from "hardhat"
 import { assert, expect } from "chai"
+import { Contract } from "ethers"
 
 describe("FundMe", async () => {
     let fundMe: Contract
@@ -10,15 +10,9 @@ describe("FundMe", async () => {
 
     beforeEach(async () => {
         await deployments.fixture(["all"])
-        const fundmeContract = await deployments.get("FundMe")
-        const mockV3AggregatorContract = await deployments.get("MockV3Aggregator")
-        mockV3Aggregator = await ethers.getContractAt(
-            mockV3AggregatorContract.abi,
-            mockV3AggregatorContract.address,
-        )
-
         deployer = (await getNamedAccounts()).deployer
-        fundMe = await ethers.getContractAt(fundmeContract.abi, fundmeContract.address)
+        fundMe = await ethers.getContract("FundMe", deployer)
+        mockV3Aggregator = await ethers.getContract("MockV3Aggregator", deployer)
     })
 
     describe("Constructor", async () => {
@@ -46,30 +40,32 @@ describe("FundMe", async () => {
         })
     })
 
-    // ToDO fix errors
-    // describe("withdraw", async () => {
-    //     beforeEach(async () => {
-    //         await fundMe.fund({ value: sentValue })
-    //     })
+    describe("withdraw", async () => {
+        beforeEach(async () => {
+            await fundMe.fund({ value: sentValue })
+        })
 
-    //     it("withdraw ETH from single funder", async () => {
-    //         // arrange
-    //         const initialBalance = await fundMe.getBalance(fundMe.address)
-    //         const initlialDeployerBalance = await fundMe.getBalance(deployer)
+        it("withdraw ETH from single funder", async () => {
+            // arrange
+            const initialBalance = await ethers.provider.getBalance(await fundMe.getAddress())
+            const initlialDeployerBalance = await ethers.provider.getBalance(deployer)
 
-    //         // act
-    //         const transactionResponse = await fundMe.withdraw()
-    //         const receipt = await transactionResponse.wait(1)
+            // act
+            const transactionResponse = await fundMe.withdraw()
+            const receipt = await transactionResponse.wait(1)
+            const { gasUsed, gasPrice } = receipt
 
-    //         const finalBalance = await fundMe.getBalance(fundMe.address)
-    //         const finalDeployerBalance = await fundMe.getBalance(deployer)
+            const gasCost = BigInt(gasUsed || 0) * BigInt(gasPrice || 0)
 
-    //         // assert
-    //         assert.equal(finalBalance.toString(), 0)
-    //         assert.equal(
-    //             initialBalance.add(initlialDeployerBalance).toString(),
-    //             finalDeployerBalance.add(1).toString(),
-    //         )
-    //     })
-    // })
+            const finalBalance = await ethers.provider.getBalance(await fundMe.getAddress())
+            const finalDeployerBalance = await ethers.provider.getBalance(deployer)
+
+            // assert
+            assert.equal(finalBalance.toString(), "0")
+            assert.equal(
+                (initialBalance + initlialDeployerBalance).toString(),
+                (finalDeployerBalance + gasCost).toString(),
+            )
+        })
+    })
 })
