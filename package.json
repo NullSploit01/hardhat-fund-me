@@ -4,7 +4,9 @@
   "description": "",
   "main": "deploy/01-deploy-fund-me.ts",
   "scripts": {
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "staging:test": "hardhat test --network sepolia",
+    "coverage": "hardhat coverage"
   },
   "repository": {
     "type": "git",
