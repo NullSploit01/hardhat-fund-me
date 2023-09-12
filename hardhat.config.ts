@@ -31,6 +31,14 @@ const config: HardhatUserConfig = {
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY,
     },
+    gasReporter: {
+        currency: "USD",
+        enabled: true,
+        noColors: true,
+        coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+        outputFile: "gas-report.txt",
+        token: "ETH",
+    },
 }
 
 export default config
