@@ -1,23 +1,25 @@
 import { Contract } from "ethers"
-import { deployments, ethers, getNamedAccounts } from "hardhat"
+import { deployments, ethers, getNamedAccounts, network } from "hardhat"
 import { assert, expect } from "chai"
+import { developmentChains } from "../../helper-hardhat-config"
 
-describe("FundMe", async () => {
-    let fundMe: Contract
-    let mockV3Aggregator: Contract
-    let deployer: any
-    const sentValue = ethers.parseEther("1")
+developmentChains.includes(network.name)
+    ? describe.skip
+    : describe("FundMe", async () => {
+          let fundMe: Contract
+          let deployer: any
+          const sentValue = ethers.parseEther("1")
 
-    beforeEach(async () => {
-        await deployments.fixture(["all"])
-        const fundmeContract = await deployments.get("FundMe")
-        const mockV3AggregatorContract = await deployments.get("MockV3Aggregator")
-        mockV3Aggregator = await ethers.getContractAt(
-            mockV3AggregatorContract.abi,
-            mockV3AggregatorContract.address,
-        )
+          beforeEach(async () => {
+              deployer = (await getNamedAccounts()).deployer
+              fundMe = await ethers.getContract("FundMe", deployer)
+          })
 
-        deployer = (await getNamedAccounts()).deployer
-        fundMe = await ethers.getContractAt(fundmeContract.abi, fundmeContract.address)
-    })
-})
+          it("Fund and Withdraw", async () => {
+              await fundMe.fund({ value: sentValue })
+              await fundMe.withdraw()
+              const endingBalance = await ethers.provider.getBalance(await fundMe.getAddress())
+
+              assert.equal(endingBalance.toString(), "0")
+          })
+      })
